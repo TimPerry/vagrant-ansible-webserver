@@ -1,0 +1,3 @@
+---
+- name: Install MySQL client
+  apt: name=mysql-client update_cache=yes
