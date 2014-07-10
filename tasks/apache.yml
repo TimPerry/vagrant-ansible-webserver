@@ -1,0 +1,55 @@
+---
+- name: install apache2
+  apt: name=apache2 update_cache=yes
+- name: install apache2-suexec-custom
+  apt: name=apache2-suexec-custom update_cache=yes
+- name: setup apache ports
+  copy: src=ports.conf dest=/etc/apache2/ports.conf
+- name: disable default apache configs
+  command: a2dissite 000-default.conf default-ssl.conf
+- name: enable rewrite apache2 module
+  apache2_module: state=present name=rewrite
+- name: enable deflate apache2 module
+  apache2_module: state=present name=deflate
+- name: enable setenvif apache2 module
+  apache2_module: state=present name=setenvif
+- name: enable headers apache2 module
+  apache2_module: state=present name=headers
+- name: enable filter apache2 module
+  apache2_module: state=present name=filter
+- name: enable expires apache2 module
+  apache2_module: state=present name=expires
+- name: enable autoindex apache2 module
+  apache2_module: state=present name=autoindex
+- name: enable alias apache2 module
+  apache2_module: state=present name=alias
+- name: enable suexec apache2 module
+  apache2_module: state=present name=suexec
+- name: enable ssl apache2 module
+  apache2_module: state=present name=ssl
+- name: Setup apache website directory
+  file: dest=/var/www/sites/{{ item.server_name }} state=directory recurse=true owner=root group=root mode=755
+  with_items: apache_vhosts
+- name: Setup apache website directory
+  file: dest=/var/www/sites/{{ item.server_name }}/public_html state=directory recurse=true owner={{ item.suexec_user }} group={{ item.suexec_group }} mode=775
+  with_items: apache_vhosts
+- name: Setup apache website directory
+  file: dest=/var/www/sites/{{ item.server_name }}/logs state=directory recurse=true owner={{ item.suexec_user }} group={{ item.suexec_group }} mode=775
+  with_items: apache_vhosts
+- name: Setup apache website directory
+  file: dest=/var/www/sites/{{ item.server_name }}/ssl state=directory recurse=true owner=www-data group=www-data mode=775
+  with_items: apache_vhosts
+- name: Setup apache vhosts
+  template: src=apache2_vhost.j2 dest=/etc/apache2/sites-available/{{ item.server_name }}.conf
+  with_items: apache_vhosts
+- name: Enable apache sites
+  command: a2ensite {{ item.server_name }}.conf
+  with_items: apache_vhosts
+- name: Setup apache vhosts suexec users
+  user: name={{ item.suexec_user }} createhome=false group=sftpusers home=/var/www/sites/{{ item.server_name }}
+  with_items: apache_vhosts
+- name: Setup apache vhosts suexec groups
+  group: name={{ item.suexec_group }}
+  with_items: apache_vhosts
+- name: restart apache
+  service: name=apache2 state=restarted

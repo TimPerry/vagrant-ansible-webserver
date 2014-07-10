@@ -1,5 +1,0 @@
----
-- include: fail2ban.yml
-- include: portsentry.yml
-- include: aide.yml
-- include: iptables.yml
