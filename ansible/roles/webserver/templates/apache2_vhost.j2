@@ -1,0 +1,29 @@
+<VirtualHost {{ item.address | default("127.0.0.1") }}:{{ item.port | default("8080")}}>
+
+	ServerName {{ item.server_name }}
+	
+	{% if item.server_aliases is defined %}
+		{% for server_alias in item.server_aliases %}
+		ServerAlias {{ server_alias }}
+		{% endfor %}	
+	{% endif %}
+
+	DocumentRoot /var/www/sites/{{ item.server_name }}/public_html
+
+	ErrorLog /var/www/sites/{{ item.server_name }}/logs/error.log
+	CustomLog /var/www/sites/{{ item.server_name }}/logs/custom.log common
+	
+	DirectoryIndex index.php index.html
+	
+	{% if item.suexec_user is defined and item.suexed_group is defined %}
+	<IfModule suexec.c>	
+		SuexecUserGroup {{ item.suexec_user }} {{ item.suexec_group }}
+	</IfModule>
+	{% endif %}
+
+	<Directory /var/www/sites/{{ item.server_name }}/public_html>
+		Options -Indexes
+		AllowOverride All
+	</Directory>
+
+</VirtualHost>
