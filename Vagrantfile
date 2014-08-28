@@ -5,11 +5,18 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu/trusty64"  
+  config.vm.box = "ubuntu/trusty64" 
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "private_network", ip: "192.168.123.123"
-  config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../public_html", "/var/www/sites/localhost/public_html"
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "webserver.yml"
+    ansible.extra_vars = {
+        apache_vhosts:
+          - {server_name: 'localhost', su_user: 'default', su_group: 'default'}
+    }
+    ansible.playbook = "ansible/webservers.yml"
+  end
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
   end
 end
