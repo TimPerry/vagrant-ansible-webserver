@@ -3,6 +3,7 @@
   hosts: all
   sudo: yes
   vars:
+    sshd_port: 22
     apache_vhosts:
       - {server_name: 'localhost', suexec_user: 'default', suexec_group: 'default'}
   roles:
