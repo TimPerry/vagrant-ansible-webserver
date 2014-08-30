@@ -1,5 +1,5 @@
 # Listen on port 2020
-Port 2020
+#Port 2020
 
 Protocol 2
 # HostKeys for protocol version 2

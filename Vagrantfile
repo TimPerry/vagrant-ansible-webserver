@@ -10,10 +10,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "private_network", ip: "192.168.123.123"
   config.vm.synced_folder "../public_html", "/var/www/sites/localhost/public_html"
   config.vm.provision "ansible" do |ansible|
-    ansible.extra_vars = {
-        apache_vhosts:
-          - {server_name: 'localhost', su_user: 'default', su_group: 'default'}
-    }
     ansible.playbook = "ansible/webservers.yml"
   end
   config.vm.provider "virtualbox" do |v|

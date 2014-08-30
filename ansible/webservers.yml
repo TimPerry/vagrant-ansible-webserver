@@ -2,5 +2,8 @@
 - name: Install webserver
   hosts: all
   sudo: yes
+  vars:
+    apache_vhosts:
+      - {server_name: 'localhost', suexec_user: 'default', suexec_group: 'default'}
   roles:
     - webserver
