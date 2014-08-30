@@ -20,10 +20,11 @@ server {
 			{% for ip in wordpress_cms_ips %}
 				allow {{ ip }};
 			{% endfor %}
+			
+	        deny all;
 		
 		{% endif %}
     	
-        deny all;
 
 	}
 
