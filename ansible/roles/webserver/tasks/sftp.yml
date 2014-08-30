@@ -1,7 +1,7 @@
 ---
 - name: Setup sftpusers group
   group: name=sftpusers
-- name: Copy over ssh config
-  copy: src=sshd_config dest=/etc/ssh/sshd_config
+- name: Template the ssh config
+  template: src=sshd_config dest=/etc/ssh/sshd_config
   notify:
   - restart ssh
