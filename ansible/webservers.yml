@@ -8,3 +8,4 @@
       - {server_name: 'localhost', suexec_user: 'default', suexec_group: 'default'}
   roles:
     - webserver
+    - database
